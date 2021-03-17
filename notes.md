@@ -23,19 +23,19 @@
    本文用的就是GloVe
 
    步骤:
-       1. 有l个单词的str q输入CloVe输出一个l维的Qemb
-       2. Qemb输入一个dG维度的GRU来获取问题的词嵌入,输出一个dG`*`l维度de
-       Qfeat = $\eta$ 
-       3. 现在Qfeat是一个对不同词语没有重点的向量组了,我们通过一个注意力机制来对不同的词语施加不同的权重
-       4. ~Q是一个(dG + dW)`*`l的向量组,即Qemb和Qfeat并起来.
-       5. Y是(~Q)乘一个可训练的权值W1,被tanh激活`[-1, 1]`.~Y同理,被sigmod激活`[0, 1]`.
-       都是dG `*` l维的 ***不懂这个~Y的控制作用***
-       6. G = Y Hadamard ~Y(对应的每个元素相乘) 这样我们就把GRU和GloVe的
+    1. 有l个单词的str q输入CloVe输出一个l维的Qemb
+    2. Qemb输入一个dG维度的GRU来获取问题的词嵌入,输出一个dG`*`l维度de
+    Qfeat = $\eta$ 
+    3. 现在Qfeat是一个对不同词语没有重点的向量组了,我们通过一个注意力机制来对不同的词语施加不同的权重
+    4. ~Q是一个(dG + dW) x l的向量组,即Qemb和Qfeat并起来.
+    5. Y是(~Q)乘一个可训练的权值W1,被tanh激活-1, 1.~Y同理,被sigmod激活0, 1.
+       都是dG x l维的 ***不懂这个~Y的控制作用***
+    6. G = Y Hadamard ~Y(对应的每个元素相乘) 这样我们就把GRU和GloVe的
        优点集合了起来
-       7. 注意力向量$\alpha$ l`*`1维,是Wa `*` G转置来的在经过一层softmax,
-       Wa是1`*`dG
-       8. 最终结果Q$~att$ = Q$~feat$ $\alpha$
-       9. QCR(q) = MLP(q$~att$) MLP是一个多层感知器
+    7. 注意力向量$\alpha$ l x 1维,是Wa x G转置来的在经过一层softmax,
+       Wa是1 x dG
+    8. 最终结果Q$~att$ = Q$~feat$ $\alpha$
+    9. QCR(q) = MLP(q$~att$) MLP是一个多层感知器
     正常VQA的映射函数f$\theat$由两部分组成,A$~\theta$$~m$ D$~\theta$$~c$
     之后又是一个Hadamard乘把QCR(q)和A$~\theta$$~m$ (v, q)搞一起喂给上述
     的D函数算分数***这里A和D函数都没有明确说明,不知到是啥.
@@ -49,7 +49,10 @@
        1. 经过了和上面相同的步骤,我们得到了问题嵌入和合并好的map $\phi$
 m D(A(v, q)元素乘QCR(q))
 
-### 总结:
+
+
+
+
     也就是到这里只讲了文本特征提取上的创新,一个对问题内容,一个对问题类型
     文章中说的是text和visual都被一个共享的特征提取之后,吧联合的特征喂给
     对立模块,这里对问题进行分类.之后QCR输出的问题特征向量和
